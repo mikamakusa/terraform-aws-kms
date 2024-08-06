@@ -89,7 +89,7 @@ variable "key" {
     enable_key_rotation                = optional(bool)
     is_enabled                         = optional(bool)
     key_usage                          = optional(string)
-    policy                             = optional(strng)
+    policy                             = optional(string)
     tags                               = optional(map(string))
     bypass_policy_lockout_safety_check = optional(bool)
     custom_key_store_id                = optional(string)
