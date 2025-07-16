@@ -17,10 +17,8 @@ resource "aws_kms_ciphertext" "this" {
 }
 
 resource "aws_kms_custom_key_store" "this" {
-  count = length(var.custom_key_store)
-  cloud_hsm_cluster_id = try(
-    element(var.cloud_hsm_cluster_id, lookup(var.custom_key_store[count.index], "cloud_hsm_cluster_id"))
-  )
+  count                    = length(var.custom_key_store)
+  cloud_hsm_cluster_id     = data.aws_cloudhsm_v2_cluster.this.id
   custom_key_store_name    = lookup(var.custom_key_store[count.index], "custom_key_store_name")
   key_store_password       = sensitive(lookup(var.custom_key_store[count.index], "key_store_password"))
   trust_anchor_certificate = file(join("/", [path.cwd, "certificate", lookup(var.custom_key_store[count.index], "trust_anchor_certificate")]))
@@ -75,7 +73,7 @@ resource "aws_kms_key" "this" {
   policy                   = jsonencode(lookup(var.key[count.index], "policy"))
   tags = merge(
     var.tags,
-    lookup(var.key[count.index], tags),
+    lookup(var.key[count.index], "tags"),
     data.aws_default_tags.this.tags
   )
   bypass_policy_lockout_safety_check = lookup(var.key[count.index], "bypass_policy_lockout_safety_check")
@@ -114,8 +112,8 @@ resource "aws_kms_replica_external_key" "this" {
 }
 
 resource "aws_kms_replica_key" "this" {
-  count                              = length(var.key) == 0 ? 0 : length(var.replica_key)
-  primary_key_arn                    = try(
+  count = length(var.key) == 0 ? 0 : length(var.replica_key)
+  primary_key_arn = try(
     element(aws_kms_key.this.*.arn, lookup(var.replica_key[count.index], "primary_key_id"))
   )
   bypass_policy_lockout_safety_check = true
@@ -123,7 +121,7 @@ resource "aws_kms_replica_key" "this" {
   description                        = lookup(var.replica_key[count.index], "description")
   enabled                            = lookup(var.replica_key[count.index], "enabled")
   policy                             = lookup(var.replica_key[count.index], "policy")
-  tags                               = merge(
+  tags = merge(
     data.aws_default_tags.this.tags,
     var.tags,
     lookup(var.replica_key[count.index], "tags")

@@ -31,7 +31,6 @@ variable "ciphertext" {
 variable "custom_key_store" {
   type = list(object({
     id                       = number
-    cloud_hsm_cluster_id     = any
     custom_key_store_name    = string
     key_store_password       = string
     trust_anchor_certificate = string
@@ -73,9 +72,9 @@ variable "grant" {
   default = []
 
   validation {
-    condition = lenght([
+    condition = alltrue([
       for a in var.grant : true if contains(["Decrypt", "Encrypt", "GenerateDataKey", "GenerateDataKeyWithoutPlaintext", "ReEncryptFrom", "ReEncryptTo", "Sign", "Verify", "GetPublicKey", "CreateGrant", "RetireGrant", "DescribeKey", "GenerateDataKeyPair", "GenerateDataKeyPairWithoutPlaintext"], a.operations)
-    ]) == length(var.grant)
+    ])
     error_message = "Valid values are Decrypt, Encrypt, GenerateDataKey, GenerateDataKeyWithoutPlaintext, ReEncryptFrom, ReEncryptTo, Sign, Verify, GetPublicKey, CreateGrant, RetireGrant, DescribeKey, GenerateDataKeyPair, or GenerateDataKeyPairWithoutPlaintext."
   }
 }
@@ -100,17 +99,17 @@ variable "key" {
   default = []
 
   validation {
-    condition = length([
+    condition = alltrue([
       for a in var.key : true if contains(["ENCRYPT_DECRYPT", "SIGN_VERIFY", "GENERATE_VERIFY_MAC"], a.key_usage)
-    ]) == length(var.key)
+    ])
     error_message = "Valid values: ENCRYPT_DECRYPT, SIGN_VERIFY, or GENERATE_VERIFY_MAC."
   }
 
   validation {
-    condition = length([
+    condition = alltrue([
       for b in var.key : true if contains(["SYMMETRIC_DEFAULT, RSA_2048, RSA_3072, RSA_4096, HMAC_256, ECC_NIST_P256, ECC_NIST_P384, ECC_NIST_P521, or ECC_SECG_P256K1"], b.customer_master_key_spec)
-    ]) == length(var.key)
-    error_message = " Valid values: SYMMETRIC_DEFAULT, RSA_2048, RSA_3072, RSA_4096, HMAC_256, ECC_NIST_P256, ECC_NIST_P384, ECC_NIST_P521, or ECC_SECG_P256K1."
+    ])
+    error_message = "Valid values: SYMMETRIC_DEFAULT, RSA_2048, RSA_3072, RSA_4096, HMAC_256, ECC_NIST_P256, ECC_NIST_P384, ECC_NIST_P521, or ECC_SECG_P256K1."
   }
 }
 

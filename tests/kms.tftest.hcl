@@ -5,7 +5,6 @@ run "setup_tests" {
 }
 
 run "kms" {
-  command = [plan,apply]
 
   variables {
     alias = [

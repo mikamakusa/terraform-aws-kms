@@ -1,189 +1,130 @@
-## Alias ##
-
-output "kms_alias_arn" {
-  value = try(
-    aws_kms_alias.this.*.arn
-  )
+output "alias" {
+  value = {
+    for a, b in aws_kms_alias.this : a => {
+      arn            = a.arn
+      id             = a.id
+      name           = a.name
+      name_prefix    = a.name_prefix
+      target_key_id  = a.target_key_id
+      target_key_arn = a.target_key_arn
+    }
+  }
 }
 
-output "kms_alias_id" {
-  value = try(
-    aws_kms_alias.this.*.id
-  )
+output "ciphertext" {
+  value = {
+    for a, b in aws_kms_ciphertext.this : a => {
+      a       = a.id
+      blob    = a.ciphertext_blob
+      context = a.context
+      key_id  = a.key_id
+    }
+  }
 }
 
-output "kms_alias_name" {
-  value = try(
-    aws_kms_alias.this.*.name
-  )
+output "custom_key_store" {
+  value = {
+    for a, b in aws_kms_custom_key_store.this : a => {
+      id                       = a.id
+      cloud_hsm_cluster_id     = a.cloud_hsm_cluster_id
+      custom_key_store_name    = a.custom_key_store_name
+      key_store_password       = a.key_store_password
+      trust_anchor_certificate = a.trust_anchor_certificate
+    }
+  }
 }
 
-output "kms_alias_target_key_id" {
-  value = try(
-    aws_kms_alias.this.*.target_key_id
-  )
+output "external_key" {
+  value = {
+    for a, b in aws_kms_external_key.this : a => {
+      id                                 = a.id
+      arn                                = a.arn
+      tags                               = a.tags
+      tags_all                           = a.tags_all
+      policy                             = a.policy
+      bypass_policy_lockout_safety_check = a.bypass_policy_lockout_safety_check
+      deletion_window_in_days            = a.deletion_window_in_days
+      enabled                            = a.enabled
+      expiration_model                   = a.expiration_model
+      key_material_base64                = a.key_material_base64
+      key_state                          = a.key_state
+      key_usage                          = a.key_usage
+      multi_region                       = a.multi_region
+      valid_to                           = a.valid_to
+    }
+  }
 }
 
-output "kms_alias_target_key_arn" {
-  value = try(
-    aws_kms_alias.this.*.target_key_arn
-  )
+output "grant" {
+  value = {
+    for a, b in aws_kms_grant.grant : a => {
+      id                    = a.id
+      key_id                = a.key_id
+      name                  = a.name
+      constraints           = a.constraints
+      grant_creation_tokens = a.grant_creation_tokens
+      grant_id              = a.grant_id
+      grant_token           = a.grant_token
+      grantee_principal     = a.grantee_principal
+      operations            = a.operations
+      retire_on_delete      = a.retire_on_delete
+      retiring_principal    = a.retiring_principal
+    }
+  }
 }
 
-## Ciphertext ##
-
-output "kms_ciphertext_id" {
-  value = try(
-    aws_kms_ciphertext.this.*.id
-  )
-}
-
-output "kms_ciphertext_blob" {
-  value = try(
-    aws_kms_ciphertext.this.*.ciphertext_blob
-  )
-}
-
-output "kms_ciphertext_context" {
-  value = try(
-    aws_kms_ciphertext.this.*.context
-  )
-}
-
-output "kms_ciphertext_key_id" {
-  value = try(
-    aws_kms_ciphertext.this.*.key_id
-  )
-}
-
-## Custom Key Store ##
-
-output "custom_key_store_id" {
-  value = try(
-    aws_kms_custom_key_store.this.*.id
-  )
-}
-
-output "custom_key_store_cloud_hsm_cluster_id" {
-  value = try(
-    aws_kms_custom_key_store.this.*.cloud_hsm_cluster_id
-  )
-}
-
-output "custom_key_store_name" {
-  value = try(
-    aws_kms_custom_key_store.this.*.custom_key_store_name
-  )
-}
-
-output "custom_key_store_password" {
-  value = sensitive(try(
-    aws_kms_custom_key_store.this.*.key_store_password
-  ))
-}
-
-## External Key ##
-
-output "external_key_id" {
-  value = try(
-    aws_kms_external_key.this.*.id
-  )
-}
-
-output "external_key_arn" {
-  value = try(
-    aws_kms_external_key.this.*.arn
-  )
-}
-
-output "external_key_valid_to" {
-  value = try(
-    aws_kms_external_key.this.*.valid_to
-  )
-}
-
-output "external_keu_usage" {
-  value = try(
-    aws_kms_external_key.this.*.key_usage
-  )
-}
-
-## Grant ##
-
-output "grant_id" {
-  value = try(
-    aws_kms_grant.grant.*.id
-  )
-}
-
-output "grant_name" {
-  value = try(
-    aws_kms_grant.grant.*.name
-  )
-}
-
-output "grant_token" {
-  value = try(
-    aws_kms_grant.grant.*.grant_token
-  )
-}
-
-output "grant_grantee_principal" {
-  value = try(
-    aws_kms_grant.grant.*.grantee_principal
-  )
-}
-
-## Key ##
-
-output "key_id" {
-  value = try(
-    aws_kms_key.this.*.id
-  )
-}
-
-output "key_arn" {
-  value = try(
-    aws_kms_key.this.*.arn
-  )
-}
-
-output "key_usage" {
-  value = try(
-    aws_kms_key.this.*.key_usage
-  )
-}
-
-output "key_custome_key_store_id" {
-  value = try(
-    aws_kms_key.this.*.custom_key_store_id
-  )
-}
-
-## Key Policy ##
-
-output "key_policy_id" {
-  value = try(
-    aws_kms_key_policy.this.*.id
-  )
+output "key" {
+  value = {
+    for a, b in aws_kms_key.this : a => {
+      id                                 = a.id
+      key_id                             = a.key_id
+      multi_region                       = a.multi_region
+      key_usage                          = a.key_usage
+      deletion_window_in_days            = a.deletion_window_in_days
+      bypass_policy_lockout_safety_check = a.bypass_policy_lockout_safety_check
+      policy                             = a.policy
+      tags_all                           = a.tags_all
+      tags                               = a.tags
+      arn                                = a.arn
+      custom_key_store_id                = a.custom_key_store_id
+      customer_master_key_spec           = a.customer_master_key_spec
+      enable_key_rotation                = a.enable_key_rotation
+      is_enabled                         = a.is_enabled
+      rotation_period_in_days            = a.rotation_period_in_days
+      xks_key_id                         = a.xks_key_id
+    }
+  }
 }
 
 output "key_policy" {
-  value = try(
-    aws_kms_key_policy.this.*.policy
-  )
+  value = {
+    for a, b in aws_kms_key_policy.this : a => {
+      id                                 = a.id
+      policy                             = a.policy
+      bypass_policy_lockout_safety_check = a.bypass_policy_lockout_safety_check
+      key_id                             = a.key_id
+    }
+  }
 }
 
-## Replica External Key ##
-
-output "replica_external_key_id" {
-  value = try(
-    aws_kms_replica_external_key.this.*.id
-  )
-}
-
-output "replica_external_key_policy" {
-  value = try(
-    aws_kms_replica_external_key.this.*.policy
-  )
+output "replica" {
+  value = {
+    for a, b in aws_kms_replica_external_key.this : a => {
+      id                                 = a.id
+      key_id                             = a.key_id
+      bypass_policy_lockout_safety_check = a.bypass_policy_lockout_safety_check
+      policy                             = a.policy
+      arn                                = a.arn
+      tags                               = a.tags
+      tags_all                           = a.tags_all
+      deletion_window_in_days            = a.deletion_window_in_days
+      key_usage                          = a.key_usage
+      valid_to                           = a.valid_to
+      key_state                          = a.key_state
+      key_material_base64                = a.key_material_base64
+      expiration_model                   = a.expiration_model
+      enabled                            = a.enabled
+      primary_key_arn                    = a.primary_key_arn
+    }
+  }
 }
